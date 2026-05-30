@@ -8,7 +8,7 @@ module ButtonHelper
   def button(variant: :primary, type: :submit, text: "'", **attrs, &block)
     extra = attrs.delete(:class)
     classes = ["button", "button-#{variant}", extra].compact.join(" ")
-    
+
     content = block_given? ? capture(&block).strip : text.strip
 
     tag.button(content, type: type, class: classes, **attrs)
