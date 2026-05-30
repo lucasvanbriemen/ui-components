@@ -5,7 +5,7 @@
 
   label {
     position: absolute;
-    top: 0.75rem !important;
+    top: 0.5rem !important;
     left: 1rem !important;
     margin: 0 !important;
     background: var(--surface);
@@ -28,10 +28,7 @@
     }
   }
 
-  input,
-  select,
-  textarea,
-  >.selectize-input {
+  input {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid var(--on-surface);
@@ -57,7 +54,7 @@
   label {
     position: absolute;
     left: 0.5rem;
-    top: 2rem !important;
+    top: 0.75rem !important;
     font-size: 1rem !important;
     color: var(--outline);
     transform-origin: left top;
