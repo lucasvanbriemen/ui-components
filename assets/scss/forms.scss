@@ -35,6 +35,7 @@
     cursor: text;
     white-space: nowrap;
     background-color: var(--surface);
+    border-radius: 0.75rem;
   }
 
   &:has(input:focus) {
