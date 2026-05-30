@@ -7,7 +7,7 @@
 module UiHelper
   def button(variant: :primary, type: :submit, **attrs, &block)
     extra   = attrs.delete(:class)
-    classes = ["btn", "btn--#{variant}", extra].compact.join(" ")
+    classes = ["button", "button-#{variant}", extra].compact.join(" ")
     tag.button(capture(&block), type: type, class: classes, **attrs)
   end
 end
