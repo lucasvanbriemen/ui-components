@@ -9,6 +9,33 @@
   font-weight: 550;
   cursor: pointer;
 
+  // Anchor the ripple ::before and clip it to the rounded shape.
+  position: relative;
+  overflow: hidden;
+
+  // Directional ripple: a circle anchored at the cursor (--ripple-x/y, set by
+  // the button Stimulus controller) that scales from 0 -> 1 when the
+  // .button--ripple class is toggled. transform: scale() is GPU-composited,
+  // so it avoids the layout thrashing of animating size/position directly.
+  &::before {
+    content: "";
+    position: absolute;
+    left: var(--ripple-x, 50%);
+    top: var(--ripple-y, 50%);
+    width: 250%;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background-color: color-mix(in srgb, var(--on-primary) 16%, transparent);
+    transform: scale(0);
+    transition: transform 0.4s ease;
+    pointer-events: none;
+  }
+
+  &.button--ripple::before {
+    transform: scale(1);
+  }
+
   &:hover:not(:disabled, .disabled) {
     background-color: var(--primary-8);
   }
@@ -16,5 +43,21 @@
   &:disabled, &.disabled {
     opacity: 0.37;
     cursor: not-allowed;
+  }
+}
+
+// Inputs (e.g. input[type="submit"]) can't render a ::before, so the controller
+// drives a radial-gradient sized by --ripple-radius instead. It snaps on/off
+// with no transition, matching the controller's behaviour.
+input.button {
+  &::before { content: none; }
+
+  &.button--ripple {
+    background-image: radial-gradient(
+      circle var(--ripple-radius, 0) at var(--ripple-x, 50%) var(--ripple-y, 50%),
+      color-mix(in srgb, var(--on-primary) 16%, transparent) 0,
+      color-mix(in srgb, var(--on-primary) 16%, transparent) 99%,
+      transparent 100%
+    );
   }
 }

@@ -9,8 +9,13 @@ module ButtonHelper
     extra = attrs.delete(:class)
     classes = ["button", "button-#{variant}", extra].compact.join(" ")
 
+    # Wire the ripple Stimulus controller, merging with any caller-supplied
+    # data attributes (and not clobbering a custom controller list).
+    data = attrs.delete(:data) || {}
+    data[:controller] = ["button", data[:controller]].compact.join(" ")
+
     content = block_given? ? capture(&block).strip : text.strip
 
-    tag.button(content, type: type, class: classes, **attrs)
+    tag.button(content, type: type, class: classes, data: data, **attrs)
   end
 end
