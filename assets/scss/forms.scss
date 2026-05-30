@@ -4,6 +4,8 @@
   border: 1px solid var(--outline);
   display: flex;
   border-radius: 0.5rem;
+  transition: none;
+  height: 3rem;
 
   &:has(*:disabled) {
     opacity: 0.6;
@@ -27,7 +29,6 @@
     position: absolute;
     left: 0.75rem;
     top: 0.75rem !important;
-    font-size: 1rem !important;
     color: var(--outline);
     transform-origin: left top;
     cursor: text;
@@ -35,11 +36,12 @@
     background-color: var(--surface);
   }
 
+  &:has(input:focus) {
+    outline: 2px solid var(--primary);
+  }
+
   &:has(input:focus),
-  &:has(input:not(:placeholder-shown)),
-  &:has(input[data-filled="true"]),
-  &:has(select:focus),
-  &:has(select:not(:invalid)) {
+  &:has(input:not(:placeholder-shown)) {
     label {
       transform: scale(0.8) translateY(-1.5rem);
       color: var(--on-surface-variant);
