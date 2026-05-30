@@ -9,7 +9,7 @@ module ButtonHelper
     extra = attrs.delete(:class)
     classes = ["button", "button-#{variant}", extra].compact.join(" ")
     
-    content = if block_given? ? capture(&block).strip : text.strip
+    content = block_given? ? capture(&block).strip : text.strip
 
     tag.button(content, type: type, class: classes, **attrs)
   end
