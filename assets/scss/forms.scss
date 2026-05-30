@@ -1,0 +1,305 @@
+// If its not within wg-form we need to apply the styling by hand
+.input-wrapper:not(.wg-form *) {
+  position: relative;
+  margin: 0;
+
+  label:not(:has(input[type="radio"])) {
+    position: absolute;
+    top: 0.75rem !important;
+    left: 1rem !important;
+    margin: 0 !important;
+    background: var(--_label-background-color, var(--light-background-color));
+    font-weight: 400 !important;
+    z-index: 9;
+  }
+
+  &:has(input:not([type="radio"]):focus),
+  &:has(input:not([type="radio"], :placeholder-shown)),
+  &:has(input:not([type="radio"])[placeholder]:not([placeholder=" "])),
+  &:has(textarea:focus),
+  &:has(textarea:not(:placeholder-shown)),
+  &:has(textarea[placeholder]:not([placeholder=" "])),
+  &:has(select:focus),
+  &:has(select:not(:invalid)) {
+    label {
+      top: -0.5rem !important;
+      left: 0.75rem !important;
+      transform: scale(0.8) !important;
+      height: 1.5rem;
+      background: var(--_label-background-color, #fff);
+    }
+  }
+
+  input,
+  select,
+  textarea,
+  >.selectize-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--light-on-surface);
+    border-radius: 0.25rem;
+    background-color: var(--_label-background-color, var(--light-background-color));
+
+    &:focus {
+      border-color: var(--light-primary);
+      outline: none;
+      background-color: var(--_label-background-color, var(--light-background-color));
+    }
+  }
+
+  // safari doesnt apply the stying properly without this
+  select {
+    -webkit-appearance: none; // stylelint-disable-line
+    appearance: none;
+    min-height: 2.5rem;
+    line-height: 1.5;
+  }
+
+  &:has(*:disabled) {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:has(input[readonly]) {
+    opacity: 0.8;
+    cursor: default;
+  }
+
+  // For select inputs we render the chevron icon to indicate its a dropdown
+  &:has(select)>svg {
+    position: absolute;
+    right: 1rem;
+    top: 0.9rem;
+    pointer-events: none;
+    color: var(--light-on-surface-variant);
+  }
+
+  &:has(.selectize-input)>svg {
+    top: 0.7rem !important;
+  }
+
+  .selectize-input {
+    &::after {
+      display: none !important;
+    }
+  }
+}
+
+.input-wrapper {
+  position: relative;
+
+  label {
+    position: absolute;
+    left: 0.5rem;
+    top: 2rem !important;
+    font-size: 1rem !important;
+    color: var(--light-outline);
+    transform-origin: left top;
+    cursor: text;
+    text-wrap: nowrap;
+    transition: all 0.2s ease-in-out;
+    background: var(--_label-background-color, transparent);
+  }
+
+  input,
+  select,
+  textarea {
+    background-color: var(--_label-background-color, transparent);
+
+    &:focus,
+    &:focus-visible {
+      background-color: var(--_label-background-color, var(--light-background-color));
+    }
+  }
+
+  &:has(input:focus),
+  &:has(input:not(:placeholder-shown)),
+  &:has(input[data-filled="true"]),
+  &:has(select:focus),
+  &:has(select:not(:invalid)) {
+    label {
+      left: 0.25rem;
+      transform: scale(0.8) translateY(-1.6rem);
+      color: var(--light-on-surface-variant);
+    }
+  }
+}
+
+// Visually hide radio input but keep it accessible for screen readers and keyboard navigation
+.visually-hidden-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.input-wrapper .geek-radio-group.radio-group .radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 1rem;
+
+  .label {
+    font-weight: 400;
+    color: var(--light-on-surface);
+    font-size: 20px;
+    position: static;
+    transform: none;
+    background: none;
+    padding: 0 !important;
+  }
+
+  .radio {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    margin: 0;
+
+    >div:not(.background-hover) {
+      width: 1rem;
+      height: 1rem;
+      border: 0.15rem solid var(--light-primary);
+      border-radius: 50%;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .background-hover {
+      position: absolute;
+      width: 2rem;
+      height: 2rem;
+      background-color: var(--light-on-surface-variant-8);
+      border-radius: 50%;
+      top: -0.5rem;
+      left: -0.5rem;
+      transform: scale(0);
+      transition: all 0.2s ease-in-out;
+    }
+  }
+
+  &:hover .radio .background-hover {
+    transform: scale(1);
+  }
+
+  // Use :has() to check if the hidden radio input is checked
+  &:has(input[type="radio"]:checked) .radio>div:not(.background-hover) {
+    border-width: 0.35rem;
+  }
+
+  // Focus styles for keyboard navigation
+  &:has(input[type="radio"]:focus) .radio .background-hover {
+    transform: scale(1);
+  }
+}
+
+.checkbox-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  position: relative;
+
+  label {
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .hover-overlay {
+    position: absolute;
+    left: -0.35rem;
+    top: -0.125rem;
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 2rem;
+    background-color: var(--light-on-surface);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    z-index: -1;
+  }
+
+  &:has(:not(input:disabled)):hover .hover-overlay {
+    opacity: 0.05;
+  }
+
+  input[type="checkbox"] {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--light-primary);
+    border-radius: 2px;
+    display: flex;
+    aspect-ratio: 1/1;
+    margin-top: 0.25rem;
+
+    &::before {
+      margin-top: 0.08rem;
+      content: "";
+      width: 0.6rem;
+      height: 0.6rem;
+      transform: scale(0);
+      transition: all 0.3s ease-in-out;
+      background-color: var(--light-primary);
+      transform-origin: bottom left;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    }
+
+    &:checked::before {
+      transform: scale(1);
+    }
+  }
+}
+
+.double-field {
+  display: flex;
+  gap: 1rem;
+
+  > :first-child {
+    flex: 1;
+  }
+
+  > :last-child {
+    flex: 1;
+  }
+}
+
+.input-with-second-field {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  > :first-child {
+    flex: 1;
+  }
+
+  > :last-child {
+    flex: none;
+    height: fit-content;
+  }
+}
+
+.dubble-text-field {
+  display: flex;
+  gap: 1rem;
+
+  .input-wrapper {
+    flex: 1;
+  }
+}
+
+.double-field {
+  display: flex;
+  gap: 1rem;
+
+  > :first-child {
+    flex: 1;
+  }
+
+  > :last-child {
+    flex: 1;
+  }
+}
