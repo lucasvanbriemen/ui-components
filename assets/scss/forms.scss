@@ -36,17 +36,6 @@
     background: var(--_label-background-color, transparent);
   }
 
-  input,
-  select,
-  textarea {
-    background-color: var(--_label-background-color, transparent);
-
-    &:focus,
-    &:focus-visible {
-      background: var(--surface);
-    }
-  }
-
   &:has(input:focus),
   &:has(input:not(:placeholder-shown)),
   &:has(input[data-filled="true"]),
