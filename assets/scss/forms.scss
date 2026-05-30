@@ -8,13 +8,13 @@
     top: 0.75rem !important;
     left: 1rem !important;
     margin: 0 !important;
-    background: var(--_label-background-color, var(--light-background-color));
+    background: var(--surface);
     font-weight: 400 !important;
     z-index: 9;
   }
 
   &:has(input:focus),
-  &:has(input:placeholder-shown),
+  &:has(input:not(:placeholder-shown)),
   &:has(input)[placeholder]:not([placeholder=" "]),
   &:has(textarea:focus),
   &:has(select:focus),
@@ -24,7 +24,7 @@
       left: 0.75rem !important;
       transform: scale(0.8) !important;
       height: 1.5rem;
-      background: var(--_label-background-color, #fff);
+      background: var(--surface);
     }
   }
 
@@ -34,14 +34,14 @@
   >.selectize-input {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid var(--light-on-surface);
+    border: 1px solid var(--on-surface);
     border-radius: 0.25rem;
-    background-color: var(--_label-background-color, var(--light-background-color));
-
+    background: var(--surface);
+    
     &:focus {
-      border-color: var(--light-primary);
+      border-color: var(--primary);
       outline: none;
-      background-color: var(--_label-background-color, var(--light-background-color));
+      background: var(--surface);
     }
   }
 
@@ -59,7 +59,7 @@
     left: 0.5rem;
     top: 2rem !important;
     font-size: 1rem !important;
-    color: var(--light-outline);
+    color: var(--outline);
     transform-origin: left top;
     cursor: text;
     text-wrap: nowrap;
@@ -74,7 +74,7 @@
 
     &:focus,
     &:focus-visible {
-      background-color: var(--_label-background-color, var(--light-background-color));
+      background: var(--surface);
     }
   }
 
@@ -86,7 +86,7 @@
     label {
       left: 0.25rem;
       transform: scale(0.8) translateY(-1.6rem);
-      color: var(--light-on-surface-variant);
+      color: var(--on-surface-variant);
     }
   }
 }
