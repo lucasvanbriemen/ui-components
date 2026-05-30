@@ -1,40 +1,16 @@
-// If its not within wg-form we need to apply the styling by hand
 .input-wrapper {
   position: relative;
   margin-top: 1rem;
-
-  label {
-    position: absolute;
-    top: 0.5rem !important;
-    left: 1rem !important;
-    margin: 0 !important;
-    background: var(--surface);
-    font-weight: 400 !important;
-    z-index: 9;
-  }
-
-  &:has(input:focus),
-  &:has(input:not(:placeholder-shown)),
-  &:has(input)[placeholder]:not([placeholder=" "]),
-  &:has(textarea:focus),
-  &:has(select:focus),
-  &:has(select:not(:invalid)) {
-    label {
-      top: -0.5rem !important;
-      left: 0.75rem !important;
-      transform: scale(0.8) !important;
-      height: 1.5rem;
-      background: var(--surface);
-    }
-  }
+  border: 1px solid var(--outline);
+  display: flex;
 
   input {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--on-surface);
     border-radius: 0.25rem;
     background: var(--surface);
-    
+    border: none;
+    padding: 0.75rem;
+
     &:focus {
       border-color: var(--primary);
       outline: none;
@@ -46,14 +22,10 @@
     opacity: 0.6;
     cursor: not-allowed;
   }
-}
-
-.input-wrapper {
-  position: relative;
 
   label {
     position: absolute;
-    left: 0.5rem;
+    left: 0.75rem;
     top: 0.75rem !important;
     font-size: 1rem !important;
     color: var(--outline);
@@ -81,9 +53,10 @@
   &:has(select:focus),
   &:has(select:not(:invalid)) {
     label {
-      left: 0.25rem;
-      transform: scale(0.8) translateY(-1.6rem);
+      left: 0.5rem;
+      transform: scale(0.8) translateY(-1.5rem);
       color: var(--on-surface-variant);
+      background-color: var(--surface);
     }
   }
 }
