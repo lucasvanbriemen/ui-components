@@ -5,9 +5,15 @@
 #   <%= button do %> Save <% end %>
 #   <%= button(variant: :secondary, type: :button, class: "w-full") { "Cancel" } %>
 module HeaderHelper
-  def header(title: "", items: [])
+  def header(title: "test", items: [])
     tag.header(class: "header") do
-      image_tag("images/logo.svg") + content_tag(:span, title, class: "title")
+      image_tag("images/logo.svg", class: "logo") + content_tag(:p, title, class: "title") +
+
+      content_tag(:nav, class: "nav") do
+        items.each do |item|
+          concat link_to(item[:name], item[:href], class: "nav-item #{'active' if item[:active]}")
+        end
+      end
     end
   end
 end

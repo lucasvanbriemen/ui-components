@@ -1,4 +1,4 @@
-header {
+.header {
   background-color: var(--surface-at-2);
   padding: 1rem;
 
@@ -13,15 +13,13 @@ header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    width: 100%;
+    height: 100%;
+  }
 
-    .title {
-      font-size: 1.25rem;
-      font-weight: bold;
-    }
-
-    svg {
-      stroke: none !important;
-    }
+  .title {
+    font-size: 1.25rem;
+    font-weight: bold;
   }
 
   a:not(.logo) {
