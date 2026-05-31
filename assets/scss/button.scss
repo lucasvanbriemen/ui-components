@@ -2,12 +2,20 @@
   background-color: var(--primary);
   color: var(--on-primary);
 
+  // inline-flex so anchor buttons (link_to) also establish a clipping box;
+  // a bare inline <a> won't clip the ripple ::before and it bleeds onto
+  // neighbouring buttons.
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   border: none;
   border-radius: 2rem;
   padding: 0.75rem 1rem;
   min-height: 2.5rem;
   font-weight: 550;
   cursor: pointer;
+  text-decoration: none;
 
   // Anchor the ripple ::before and clip it to the rounded shape.
   position: relative;
@@ -30,6 +38,7 @@
     transform: scale(0);
     transition: transform 0.4s ease;
     pointer-events: none;
+    overflow: hidden;
   }
 
   &.button--ripple::before {
