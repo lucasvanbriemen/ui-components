@@ -56,14 +56,16 @@
 
   &-text {
     background-color: transparent;
-    color: var(--on-primary);
+    color: var(--on-surface);
 
     &:hover:not(:disabled, .disabled) {
       background-color: var(--primary-8);
+      color: var(--on-primary);
     }
 
     &.active {
-      background-color: var(--primary-8);
+      background-color: var(--primary);
+      color: var(--on-primary);
     }
   }
 }
