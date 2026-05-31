@@ -7,7 +7,7 @@
 module HeaderHelper
   def header(title: "test", items: [])
     tag.header(class: "header") do
-      image_tag("images/logo.svg", class: "logo") + content_tag(:p, title, class: "title") +
+      image_tag("images/logo.svg", class: "logo") + content_tag(:span, "", class: "divder") + content_tag(:p, title, class: "title") + content_tag(:span, "", class: "divder") + 
 
         content_tag(:nav, class: "nav") do
           items.each do |item|

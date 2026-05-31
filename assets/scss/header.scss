@@ -16,6 +16,15 @@
     height: 100%;
   }
 
+  .divder {
+    width: 4px;
+    height: 100%;
+    background-color: var(--outline-variant);
+    border-radius: 2px;
+    transform: rotate(25deg);
+    display: block;
+  }
+
   .title {
     font-size: 1.25rem;
     font-weight: bold;
