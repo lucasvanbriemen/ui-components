@@ -5,7 +5,7 @@
 #   <%= button do %> Save <% end %>
 #   <%= button(variant: :secondary, type: :button, class: "w-full") { "Cancel" } %>
 module ButtonHelper
-  def button(variant: :primary, type: :submit, text: "'", **attrs, &block)
+  def button(variant: :primary, type: :submit, text: "'", href: "", **attrs, &block)
     extra = attrs.delete(:class)
     classes = ["button", "button-#{variant}", extra].compact.join(" ")
 
@@ -15,6 +15,10 @@ module ButtonHelper
     data[:controller] = ["button", data[:controller]].compact.join(" ")
 
     content = block_given? ? capture(&block).strip : text.strip
+
+    if href.present?
+      return link_to(content, href, class: classes, data: data, **attrs)
+    end
 
     tag.button(content, type: type, class: classes, data: data, **attrs)
   end

@@ -11,7 +11,7 @@ module HeaderHelper
 
         content_tag(:nav, class: "nav") do
           items.each do |item|
-            concat link_to(item[:name], item[:href], class: "nav-item #{'active' if item[:active]}")
+            concat button(text: item[:name], variant: :text, href: item[:href], class: "nav-item #{'active' if item[:active]}") #if item[:button]
           end
         end
     end
