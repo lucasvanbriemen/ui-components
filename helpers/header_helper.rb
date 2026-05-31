@@ -12,7 +12,7 @@ module HeaderHelper
 
   def header(title: "test", items: [])
     tag.header(class: "header") do
-      raw(LOGO_SVG) + content_tag(:span, "", class: "divder") + content_tag(:p, title, class: "title") + content_tag(:span, "", class: "divder") +
+      raw(LOGO_SVG) + content_tag(:span, "", class: "divder") + link_to(title, root_path, class: "title") + content_tag(:span, "", class: "divder") +
 
         content_tag(:nav, class: "nav") do
           items.each do |item|
