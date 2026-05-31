@@ -35,4 +35,11 @@
     display: flex;
     gap: 0.5rem;
   }
+
+  @media screen and (max-width: 768px) {
+    justify-content: center;
+    .divder, .title, svg {
+      display: none;
+    }
+  }
 }

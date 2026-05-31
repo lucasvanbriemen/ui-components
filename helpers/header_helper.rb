@@ -10,7 +10,7 @@ module HeaderHelper
   # against the host page — CSS variables can't cross an <img> boundary.
   LOGO_SVG = File.read(File.expand_path("../assets/images/logo.svg", __dir__)).freeze
 
-  def header(title: "test", items: [])
+  def header(title: "No mans land", items: [])
     tag.header(class: "header") do
       raw(LOGO_SVG) + content_tag(:span, "", class: "divder") + link_to(title, root_path, class: "title") + content_tag(:span, "", class: "divder") +
 
