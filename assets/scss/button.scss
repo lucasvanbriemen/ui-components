@@ -53,6 +53,19 @@
     opacity: 0.37;
     cursor: not-allowed;
   }
+
+  &-text {
+    background-color: transparent;
+    color: var(--on-primary);
+
+    &:hover:not(:disabled, .disabled) {
+      background-color: var(--primary-8);
+    }
+
+    &.active {
+      background-color: var(--primary-8);
+    }
+  }
 }
 
 // Inputs (e.g. input[type="submit"]) can't render a ::before, so the controller

@@ -5,9 +5,9 @@
 #   <%= button do %> Save <% end %>
 #   <%= button(variant: :secondary, type: :button, class: "w-full") { "Cancel" } %>
 module ButtonHelper
-  def button(variant: :primary, type: :submit, text: "'", href: "", **attrs, &block)
+  def button(variant: :primary, type: :submit, text: "'", href: "", active: false, **attrs, &block)
     extra = attrs.delete(:class)
-    classes = ["button", "button-#{variant}", extra].compact.join(" ")
+    classes = ["button", "button-#{variant}", ("active" if active), extra].compact.join(" ")
 
     # Wire the ripple Stimulus controller, merging with any caller-supplied
     # data attributes (and not clobbering a custom controller list).
