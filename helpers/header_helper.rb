@@ -11,7 +11,7 @@ module HeaderHelper
   LOGO_SVG = File.read(File.expand_path("../assets/images/logo.svg", __dir__)).freeze
 
   def header(title: "No mans land", items: [])
-    tag.header(class: "header") do
+    tag.header(class: "header frosted-glass") do
       raw(LOGO_SVG) + content_tag(:span, "", class: "divder") + link_to(title, root_path, class: "title") + content_tag(:span, "", class: "divder") +
 
         content_tag(:nav, class: "nav") do
