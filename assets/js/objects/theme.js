@@ -24,6 +24,18 @@ export default {
       const value = this.getTheme() === "dark" ? color.dark : color.light;
       document.documentElement.style.setProperty(`--${name}`, value);
     });
+
+    this.applyImages();
+  },
+
+  applyImages() {
+    const theme = this.getTheme();
+    document.querySelectorAll("[data-theme-image]").forEach((element) => {
+      const imageUrl = element.getAttribute(`data-theme-image-${theme}`);
+      if (imageUrl) {
+        element.src = imageUrl;
+      }
+    });
   },
 
   init() {
