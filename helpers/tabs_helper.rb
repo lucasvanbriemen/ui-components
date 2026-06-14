@@ -1,12 +1,12 @@
 module TabsHelper
-  def tabs(tabs:)
+  def tabs(items:)
     content_tag(:div, class: "tabs") do
       content_tag(:nav) do
-        tabs.each do |tab|
+        safe_join(items.map do |tab|
           content_tag(:div, class: "tab") do
             link_to(tab[:label], tab[:href], class: "tab #{'current disabled' if tab[:active]}")
           end
-        end
+        end)
       end
     end
   end
