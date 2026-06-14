@@ -1,4 +1,4 @@
-.pagination {
+.pagination, .tabs {
   display: flex;
   justify-content: center;
 
@@ -11,32 +11,24 @@
     background-color: var(--surface-at-1);
     border: 1px solid var(--outline-variant);
 
-    .page,
-    .first,
-    .prev,
-    .next,
-    .last,
-    .gap {
-
-      a,
-      &.current {
+    .page, .first, .prev, .next, .last, .gap, .tab {
+      a, &.current {
         display: flex;
         align-items: center;
         justify-content: center;
         min-width: 2.25rem;
         height: 2.25rem;
-        padding: 0 0.5rem;
+        padding: 0 0.75rem;
         border-radius: 0.75rem;
       }
 
-      a:hover {
+      a:hover:not(.disabled) {
         background-color: var(--surface-at-2);
       }
 
       &.current {
         background-color: var(--primary);
         color: var(--on-primary);
-        font-weight: bold;
       }
     }
   }
