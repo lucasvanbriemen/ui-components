@@ -1,7 +1,8 @@
 module IconHelper
   def icon(name, **attrs)
-    asset = Rails.application.assets.load_path.find("#{name}.svg")
-    raise Propshaft::MissingAssetError, "The asset '#{name}.svg' was not found in the load path." unless asset
+    logical_path = "images/#{name}.svg"
+    asset = Rails.application.assets.load_path.find(logical_path)
+    raise Propshaft::MissingAssetError, "The asset '#{logical_path}' was not found in the load path." unless asset
 
     attrs = attrs.map { |key, value| %(#{key}="#{value}") }
 
