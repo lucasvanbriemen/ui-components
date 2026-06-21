@@ -4,33 +4,9 @@
 .multi-select {
   position: relative;
 
-  &__trigger {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.1rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.75rem;
-    border: 1px solid var(--outline);
-    background-color: var(--surface);
-    color: inherit;
-    cursor: pointer;
-    text-align: left;
-
-    &:hover {
-      background-color: var(--surface-at-1);
-    }
-  }
-
   &--open &__trigger,
   &--active &__trigger {
     border-color: var(--primary);
-  }
-
-  &__title {
-    font-size: 0.85rem;
-    color: var(--outline);
   }
 
   &__summary {
