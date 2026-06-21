@@ -25,9 +25,7 @@ module MultiSelectHelper
   private
 
   def multi_select_trigger(title, placeholder, form)
-    form.text_field label: title, class: "multi-select__trigger", data: { action: "multi-select#toggle" } do
-        tag.span(placeholder, class: "multi-select__summary", data: { "multi-select-target": "summary" })
-    end
+    form.text_field(:multi_select, readonly: true, label: title, name: nil, value: placeholder, class: "multi-select__trigger", data: { action: "click->multi-select#toggle", "multi-select-target": "summary" })
   end
 
   def multi_select_panel(name, title, options, selected)

@@ -82,7 +82,7 @@ export default class extends Controller {
     const names = this.optionTargets
       .filter((option) => option.querySelector("input[type=checkbox]").checked)
       .map((option) => option.dataset.name)
-    this.summaryTarget.textContent = names.length === 0 ? this.placeholderValue : names.join(", ")
+    this.summaryTarget.value = names.length === 0 ? this.placeholderValue : names.join(", ")
     this.element.classList.toggle("multi-select--active", names.length > 0)
   }
 
