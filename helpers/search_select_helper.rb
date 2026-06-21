@@ -13,43 +13,43 @@
 #
 # Each option is a hash: { value:, label:, image: (optional avatar url) }.
 module SearchSelectHelper
-  def multi_select(name:, title:, options:, selected: [], placeholder: "Anyone", form: nil)
+  def search_select(name:, title:, options:, selected: [], placeholder: "Anyone", form: nil)
     selected = Array(selected).map(&:to_s)
 
     tag.div(class: "search-select", data: { controller: "search-select", "search-select-placeholder-value": placeholder }) do
-      multi_select_trigger(title, placeholder, form) + multi_select_panel(name, title, options, selected, form)
+      search_select_trigger(title, placeholder, form) + search_select_panel(name, title, options, selected, form)
     end
   end
 
   private
 
-  def multi_select_trigger(title, placeholder, form)
-    form.text_field(:multi_select, readonly: true, label: title, name: nil, value: placeholder, data: { action: "click->search-select#toggle", "search-select-target": "summary" })
+  def search_select_trigger(title, placeholder, form)
+    form.text_field(:search_select, readonly: true, label: title, name: nil, value: placeholder, data: { action: "click->search-select#toggle", "search-select-target": "summary" })
   end
 
-  def multi_select_panel(name, title, options, selected, form)
+  def search_select_panel(name, title, options, selected, form)
     tag.div(class: "option-wrapper", hidden: true, data: { "search-select-target": "panel" }) do
-      search = form.text_field(:multi_select,
+      search = form.text_field(:search_select,
         label: "Search #{title.downcase}…",
         data: { "search-select-target": "search", action: "input->search-select#filter" }
       )
 
       list = tag.div(class: "search-select__options") do
-        safe_join(options.map { |option| multi_select_option(name, option, selected, form) })
+        safe_join(options.map { |option| search_select_option(name, option, selected, form) })
       end
 
       search + list
     end
   end
 
-  def multi_select_option(name, option, selected, form)
+  def search_select_option(name, option, selected, form)
     value = option[:value].to_s
     label = option[:label]
 
     tag.label(class: "option", data: { "search-select-target": "option", label: label }) do
       checkbox = form.check_box("#{name}[]", { id: "#{name}-#{value}", checked: selected.include?(value), data: { action: "search-select#onToggle" } }, value, nil)
       avatar = if option[:image].present?
-        tag.img(src: option[:image], class: "search-select__avatar", loading: "lazy", alt: "")
+        tag.img(src: option[:image], class: "avatar", loading: "lazy", alt: "")
       else
         "".html_safe
       end
