@@ -46,7 +46,7 @@ export default class extends Controller {
   filter() {
     const query = this.searchTarget.value.trim().toLowerCase()
     this.optionTargets.forEach((option) => {
-      option.hidden = query !== "" && !option.dataset.label.includes(query)
+      option.hidden = query !== "" && !option.dataset.label.toLowerCase().includes(query)
     })
   }
 
@@ -63,11 +63,11 @@ export default class extends Controller {
   }
 
   updateSummary() {
-    const names = this.optionTargets
+    const labels = this.optionTargets
       .filter((option) => option.querySelector("input[type=checkbox]").checked)
-      .map((option) => option.dataset.name)
-    this.summaryTarget.value = names.length === 0 ? this.placeholderValue : names.join(", ")
-    this.element.classList.toggle("multi-select--active", names.length > 0)
+      .map((option) => option.dataset.label)
+    this.summaryTarget.value = labels.length === 0 ? this.placeholderValue : labels.join(", ")
+    this.element.classList.toggle("multi-select--active", labels.length > 0)
   }
 
   handleDocumentClick(event) {

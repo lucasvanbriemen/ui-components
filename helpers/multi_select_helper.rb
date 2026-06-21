@@ -49,7 +49,7 @@ module MultiSelectHelper
     value = option[:value].to_s
     label = option[:label]
 
-    tag.label(class: "multi-select__option", data: { "multi-select-target": "option", label: label.to_s.downcase, name: label }) do
+    tag.label(class: "multi-select__option", data: { "multi-select-target": "option", label: label }) do
       checkbox = form.check_box("#{name}[]", { id: "#{name}-#{value}", checked: selected.include?(value), data: { action: "multi-select#onToggle" } }, value, nil)
       avatar = if option[:image].present?
         tag.img(src: option[:image], class: "multi-select__avatar", loading: "lazy", alt: "")
