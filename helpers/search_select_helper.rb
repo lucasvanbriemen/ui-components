@@ -46,7 +46,7 @@ module SearchSelectHelper
     value = option[:value].to_s
     label = option[:label]
 
-    tag.label(class: "search-select__option", data: { "search-select-target": "option", label: label }) do
+    tag.label(class: "option", data: { "search-select-target": "option", label: label }) do
       checkbox = form.check_box("#{name}[]", { id: "#{name}-#{value}", checked: selected.include?(value), data: { action: "search-select#onToggle" } }, value, nil)
       avatar = if option[:image].present?
         tag.img(src: option[:image], class: "search-select__avatar", loading: "lazy", alt: "")
