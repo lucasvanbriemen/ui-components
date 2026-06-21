@@ -59,6 +59,12 @@
     cursor: pointer;
     margin: 0.25rem;
 
+    // Same as &__panel: `display: flex` outranks the [hidden] UA rule, so
+    // filtered-out options must be re-hidden explicitly.
+    &[hidden] {
+      display: none;
+    }
+
     &:hover {
       background-color: var(--surface-at-1);
     }
