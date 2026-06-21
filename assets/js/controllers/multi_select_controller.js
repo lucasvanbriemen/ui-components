@@ -50,18 +50,6 @@ export default class extends Controller {
     })
   }
 
-  // Enter toggles the first visible option, so a user can type a name and hit
-  // Enter to pick it without reaching for the mouse.
-  keydown(event) {
-    if (event.key !== "Enter") return
-    event.preventDefault()
-    const first = this.optionTargets.find((option) => !option.hidden)
-    if (!first) return
-    const checkbox = first.querySelector("input[type=checkbox]")
-    checkbox.checked = !checkbox.checked
-    this.updateSummary()
-  }
-
   onToggle() {
     this.updateSummary()
   }

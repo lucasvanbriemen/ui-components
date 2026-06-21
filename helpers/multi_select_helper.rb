@@ -34,7 +34,7 @@ module MultiSelectHelper
         type: "text",
         class: "multi-select__search",
         placeholder: "Search #{title.downcase}…",
-        data: { "multi-select-target": "search", action: "input->multi-select#filter keydown->multi-select#keydown" }
+        data: { "multi-select-target": "search", action: "input->multi-select#filter" }
       )
 
       list = tag.div(class: "multi-select__options") do
