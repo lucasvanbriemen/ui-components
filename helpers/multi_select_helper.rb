@@ -18,7 +18,7 @@ module MultiSelectHelper
 
     tag.div(class: "multi-select",
             data: { controller: "multi-select", "multi-select-placeholder-value": placeholder }) do
-      multi_select_trigger(title, placeholder, form) + multi_select_panel(name, title, options, selected)
+      multi_select_trigger(title, placeholder, form) + multi_select_panel(name, title, options, selected, form)
     end
   end
 
@@ -28,7 +28,7 @@ module MultiSelectHelper
     form.text_field(:multi_select, readonly: true, label: title, name: nil, value: placeholder, class: "multi-select__trigger", data: { action: "click->multi-select#toggle", "multi-select-target": "summary" })
   end
 
-  def multi_select_panel(name, title, options, selected)
+  def multi_select_panel(name, title, options, selected, form)
     tag.div(class: "multi-select__panel", hidden: true, data: { "multi-select-target": "panel" }) do
       search = tag.input(
         type: "text",
@@ -38,22 +38,21 @@ module MultiSelectHelper
       )
 
       list = tag.ul(class: "multi-select__options") do
-        safe_join(options.map { |option| multi_select_option(name, option, selected) })
+        safe_join(options.map { |option| multi_select_option(name, option, selected, form) })
       end
 
       search + list
     end
   end
 
-  def multi_select_option(name, option, selected)
+  def multi_select_option(name, option, selected, form)
     value = option[:value].to_s
     label = option[:label]
 
     tag.li(class: "multi-select__option",
            data: { "multi-select-target": "option", label: label.to_s.downcase, name: label }) do
       tag.label do
-        checkbox = check_box_tag("#{name}[]", value, selected.include?(value),
-                                 id: "#{name}-#{value}", data: { action: "multi-select#onToggle" })
+        checkbox = form.check_box("#{name}[]", { id: "#{name}-#{value}", checked: selected.include?(value), data: { action: "multi-select#onToggle" } }, value, nil)
         avatar = if option[:image].present?
           tag.img(src: option[:image], class: "multi-select__avatar", loading: "lazy", alt: "")
         else
