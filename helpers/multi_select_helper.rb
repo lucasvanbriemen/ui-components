@@ -37,7 +37,7 @@ module MultiSelectHelper
         data: { "multi-select-target": "search", action: "input->multi-select#filter keydown->multi-select#keydown" }
       )
 
-      list = tag.ul(class: "multi-select__options") do
+      list = tag.div(class: "multi-select__options") do
         safe_join(options.map { |option| multi_select_option(name, option, selected, form) })
       end
 
