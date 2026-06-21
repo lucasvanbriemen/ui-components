@@ -30,10 +30,9 @@ module MultiSelectHelper
 
   def multi_select_panel(name, title, options, selected, form)
     tag.div(class: "multi-select__panel", hidden: true, data: { "multi-select-target": "panel" }) do
-      search = tag.input(
-        type: "text",
+      search = form.text_field(:multi_select,
         class: "multi-select__search",
-        placeholder: "Search #{title.downcase}…",
+        label: "Search #{title.downcase}…",
         data: { "multi-select-target": "search", action: "input->multi-select#filter" }
       )
 
