@@ -38,12 +38,8 @@ export default class extends Controller {
   }
 
   close() {
-    if (this.panelTarget.hidden) return
     this.panelTarget.hidden = true
     this.element.classList.remove("multi-select--open")
-    if (this.selectedValues().join(",") !== this.selectionOnOpen) {
-      this.element.closest("form").requestSubmit()
-    }
   }
 
   // Show only options whose label contains the query.
