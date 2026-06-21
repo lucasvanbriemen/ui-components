@@ -4,18 +4,6 @@
 .multi-select {
   position: relative;
 
-  &--open &__trigger,
-  &--active &__trigger {
-    border-color: var(--primary);
-  }
-
-  &__summary {
-    max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   &__panel {
     position: absolute;
     z-index: 5;
