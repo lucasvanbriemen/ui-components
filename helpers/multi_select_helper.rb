@@ -16,8 +16,7 @@ module SearchSelectHelper
   def multi_select(name:, title:, options:, selected: [], placeholder: "Anyone", form: nil)
     selected = Array(selected).map(&:to_s)
 
-    tag.div(class: "multi-select",
-            data: { controller: "multi-select", "multi-select-placeholder-value": placeholder }) do
+    tag.div(class: "search-select", data: { controller: "search-select", "search-select-placeholder-value": placeholder }) do
       multi_select_trigger(title, placeholder, form) + multi_select_panel(name, title, options, selected, form)
     end
   end
@@ -25,18 +24,17 @@ module SearchSelectHelper
   private
 
   def multi_select_trigger(title, placeholder, form)
-    form.text_field(:multi_select, readonly: true, label: title, name: nil, value: placeholder, class: "multi-select__trigger", data: { action: "click->multi-select#toggle", "multi-select-target": "summary" })
+    form.text_field(:multi_select, readonly: true, label: title, name: nil, value: placeholder, data: { action: "click->search-select#toggle", "search-select-target": "summary" })
   end
 
   def multi_select_panel(name, title, options, selected, form)
-    tag.div(class: "multi-select__panel", hidden: true, data: { "multi-select-target": "panel" }) do
+    tag.div(class: "option-wrapper", hidden: true, data: { "search-select-target": "panel" }) do
       search = form.text_field(:multi_select,
-        class: "multi-select__search",
         label: "Search #{title.downcase}…",
-        data: { "multi-select-target": "search", action: "input->multi-select#filter" }
+        data: { "search-select-target": "search", action: "input->search-select#filter" }
       )
 
-      list = tag.div(class: "multi-select__options") do
+      list = tag.div(class: "search-select__options") do
         safe_join(options.map { |option| multi_select_option(name, option, selected, form) })
       end
 
@@ -48,10 +46,10 @@ module SearchSelectHelper
     value = option[:value].to_s
     label = option[:label]
 
-    tag.label(class: "multi-select__option", data: { "multi-select-target": "option", label: label }) do
-      checkbox = form.check_box("#{name}[]", { id: "#{name}-#{value}", checked: selected.include?(value), data: { action: "multi-select#onToggle" } }, value, nil)
+    tag.label(class: "search-select__option", data: { "search-select-target": "option", label: label }) do
+      checkbox = form.check_box("#{name}[]", { id: "#{name}-#{value}", checked: selected.include?(value), data: { action: "search-select#onToggle" } }, value, nil)
       avatar = if option[:image].present?
-        tag.img(src: option[:image], class: "multi-select__avatar", loading: "lazy", alt: "")
+        tag.img(src: option[:image], class: "search-select__avatar", loading: "lazy", alt: "")
       else
         "".html_safe
       end
