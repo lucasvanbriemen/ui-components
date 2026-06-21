@@ -12,7 +12,7 @@
 #         placeholder: "Anyone") %>
 #
 # Each option is a hash: { value:, label:, image: (optional avatar url) }.
-module MultiSelectHelper
+module SearchSelectHelper
   def multi_select(name:, title:, options:, selected: [], placeholder: "Anyone", form: nil)
     selected = Array(selected).map(&:to_s)
 
