@@ -11,6 +11,13 @@ class CustomFormBuilder < ActionView::Helpers::FormBuilder
     wrap_with_label(method, options) { super(method, extract_input_options(options, default_placeholder: " ")) }
   end
 
+  def select(method, choices = nil, options = {}, html_options = {}, &block)
+    merged_options = options.merge(html_options)
+    wrap_with_label(method, merged_options) do
+        super(method, choices, options, extract_input_options(merged_options), &block)
+    end
+  end
+
   def submit(value = nil, options = {})
     merged_options = options.merge(class: [options[:class], "wg-button wg-button-form"].compact)
     button(variant: :primary, type: :submit, text: value, **merged_options)
