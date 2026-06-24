@@ -18,8 +18,9 @@ class CustomFormBuilder < ActionView::Helpers::FormBuilder
     end
   end
 
-  def submit(value = nil, options = {})
-    button(variant: :primary, type: :submit, text: value, **options)
+  def submit(text = nil, **options)
+    text ||= options.delete(:text)
+    @template.button(variant: :primary, type: :submit, text: text, **options)
   end
 
   def wrap_with_label(method, options)
