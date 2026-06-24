@@ -44,5 +44,9 @@ export default {
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
       this.applyTheme();
     });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      this.applyImages();
+    });
   }
 };
