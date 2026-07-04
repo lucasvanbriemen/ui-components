@@ -203,43 +203,4 @@
 
     &:focus { outline: none; }
   }
-
-  // Emoji autocomplete popup, anchored to the bottom-left of the editor.
-  &__suggestions {
-    position: absolute;
-    left: 0.5rem;
-    bottom: 0.5rem;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    min-width: 12rem;
-    padding: 0.25rem;
-    border: 1px solid var(--outline);
-    border-radius: 0.75rem;
-    background: var(--surface);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-  }
-
-  &__suggestion {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 0.6rem;
-    border: none;
-    border-radius: 0.5rem;
-    background: transparent;
-    color: var(--on-surface);
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-
-    strong { color: var(--primary); }
-
-    &:hover,
-    &.is-active { background: var(--surface-variant, rgba(127, 127, 127, 0.15)); }
-  }
-
-  &__suggestion-hint {
-    color: var(--on-surface-variant);
-  }
 }

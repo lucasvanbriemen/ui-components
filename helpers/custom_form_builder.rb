@@ -144,11 +144,8 @@ class CustomFormBuilder < ActionView::Helpers::FormBuilder
     )
 
     textarea = @template.text_area(@object_name, method, input_options)
-    suggestions = @template.content_tag(:div, "", class: "markdown-editor__suggestions", hidden: true,
-      data: { "markdown-editor-target": "suggestions" })
-
     write_pane = @template.content_tag(:div,
-      @template.safe_join([build_markdown_toolbar, textarea, suggestions]),
+      @template.safe_join([build_markdown_toolbar, textarea]),
       class: "markdown-editor__write", data: { "markdown-editor-target": "write" })
 
     @template.content_tag(:div, @template.safe_join([write_pane]),

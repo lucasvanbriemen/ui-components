@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import emoji from "objects/emoji"
 
 // GitHub-flavored-markdown editor over a plain <textarea>.
 //
@@ -12,11 +11,8 @@ import emoji from "objects/emoji"
 // Beyond formatting it adds editing conveniences, all client-side:
 //   - list continuation: Enter inside a list item starts the next item, and a
 //     second Enter on an empty item ends the list;
-//   - a suggestions popup that surfaces (a) emoji when you type ":tag" and
-//     (b) a "Did you mean …?" fix when the word you're typing is a known typo.
-//     Both are applied with click / Enter / Tab; nothing is changed silently.
 export default class extends Controller {
-  static targets = ["input", "suggestions"]
+  static targets = ["input"]
 
   connect() {
     this.activeIndex = 0
@@ -97,15 +93,6 @@ export default class extends Controller {
     ta.setSelectionRange(pos, pos)
   }
 
-  // --- Keyboard ------------------------------------------------------------
-
-  keydown(event) {
-    if (this.suggestionsVisible && ["ArrowDown", "ArrowUp", "Enter", "Tab", "Escape"].includes(event.key)) {
-      this.handleSuggestionKey(event)
-      return
-    }
-    if (event.key === "Enter") this.continueList(event)
-  }
 
   // Enter inside "- ", "* ", "1. " etc. continues the list; on an empty item it
   // removes the marker and breaks out of the list instead.
@@ -132,84 +119,6 @@ export default class extends Controller {
     ta.setSelectionRange(pos, pos)
   }
 
-  // --- Suggestions popup (emoji + spelling) --------------------------------
-
-  oninput() {
-    this.updateSuggestions()
-  }
-
-  updateSuggestions() {
-    const ta = this.inputTarget
-    const caret = ta.selectionStart
-    const upto = ta.value.slice(0, caret)
-
-    // ":tag" emoji autocomplete takes priority over spelling.
-    const emojiToken = upto.match(/:([a-z0-9_+-]{2,})$/i)
-    if (emojiToken) {
-      const query = emojiToken[1].toLowerCase()
-      const start = caret - emojiToken[0].length
-      const items = Object.keys(emoji)
-        .filter((key) => key.includes(query))
-        .sort((a, b) => (b.startsWith(query) - a.startsWith(query)) || a.localeCompare(b))
-        .slice(0, 6)
-        .map((key) => ({ html: `${emoji[key]}<span>:${key}:</span>`, start, end: caret, insert: `${emoji[key]} ` }))
-      return items.length ? this.renderSuggestions(items) : this.hideSuggestions()
-    }
-
-    this.hideSuggestions()
-  }
-
-  // Each suggestion knows the [start, end) range it replaces and the text to
-  // insert, so applying one is uniform regardless of its kind.
-  renderSuggestions(items) {
-    this.activeIndex = 0
-    this.suggestionsTarget.innerHTML = items
-      .map((item, i) => `<button type="button" tabindex="-1" class="markdown-editor__suggestion${i === 0 ? " is-active" : ""}" data-action="click->markdown-editor#applySuggestion" data-start="${item.start}" data-end="${item.end}" data-insert="${this.escape(item.insert)}">${item.html}</button>`)
-      .join("")
-    this.suggestionsTarget.hidden = false
-  }
-
-  handleSuggestionKey(event) {
-    const items = this.suggestionItems
-
-    if (event.key === "Escape") return this.hideSuggestions()
-
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      event.preventDefault()
-      const dir = event.key === "ArrowDown" ? 1 : -1
-      this.activeIndex = (this.activeIndex + dir + items.length) % items.length
-      items.forEach((el, i) => el.classList.toggle("is-active", i === this.activeIndex))
-      return
-    }
-
-    // Enter or Tab commits the highlighted suggestion.
-    event.preventDefault()
-    this.applyFromButton(items[this.activeIndex])
-  }
-
-  applySuggestion(event) {
-    this.applyFromButton(event.currentTarget)
-  }
-
-  applyFromButton(button) {
-    if (!button) return this.hideSuggestions()
-    const ta = this.inputTarget
-    const start = Number(button.dataset.start)
-    const end = Number(button.dataset.end)
-    const insert = button.dataset.insert
-
-    ta.value = ta.value.slice(0, start) + insert + ta.value.slice(end)
-    const pos = start + insert.length
-    ta.focus()
-    ta.setSelectionRange(pos, pos)
-    this.hideSuggestions()
-  }
-
-  hideSuggestions() {
-    this.suggestionsTarget.hidden = true
-    this.suggestionsTarget.innerHTML = ""
-  }
-
   renderInline(text) {
     return this.escape(text)
       .replace(/&lt;ins&gt;([\s\S]*?)&lt;\/ins&gt;/g, "<u>$1</u>")
@@ -234,13 +143,5 @@ export default class extends Controller {
 
   closeMenus() {
     this.element.querySelectorAll("details[open]").forEach((details) => { details.open = false })
-  }
-
-  get suggestionsVisible() {
-    return !this.suggestionsTarget.hidden
-  }
-
-  get suggestionItems() {
-    return Array.from(this.suggestionsTarget.children)
   }
 }
