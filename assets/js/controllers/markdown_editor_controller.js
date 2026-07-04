@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import corrections from "objects/corrections"
 import emoji from "objects/emoji"
 
 // GitHub-flavored-markdown editor over a plain <textarea>.
@@ -155,21 +154,6 @@ export default class extends Controller {
         .slice(0, 6)
         .map((key) => ({ html: `${emoji[key]}<span>:${key}:</span>`, start, end: caret, insert: `${emoji[key]} ` }))
       return items.length ? this.renderSuggestions(items) : this.hideSuggestions()
-    }
-
-    // Spelling: the word currently being typed, if it's a known typo.
-    const wordToken = upto.match(/([A-Za-z']+)$/)
-    if (wordToken) {
-      const typo = wordToken[1].toLowerCase()
-      const fix = Object.hasOwn(corrections, typo) && corrections[typo]
-      if (fix) {
-        const cased = this.matchCase(wordToken[1], fix)
-        const start = caret - wordToken[1].length
-        return this.renderSuggestions([{
-          html: `<span class="markdown-editor__suggestion-hint">Did you mean</span> <strong>${cased}</strong>?`,
-          start, end: caret, insert: cased
-        }])
-      }
     }
 
     this.hideSuggestions()
