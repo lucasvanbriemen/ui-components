@@ -130,11 +130,6 @@
     }
   }
 
-  &__preview {
-    padding: 0.85rem 1rem;
-    min-height: 7rem;
-  }
-
   &:focus-within {
     outline: 2px solid var(--primary);
   }

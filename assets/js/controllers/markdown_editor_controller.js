@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
-import emoji from "objects/emoji"
 import corrections from "objects/corrections"
+import emoji from "objects/emoji"
 
 // GitHub-flavored-markdown editor over a plain <textarea>.
 //
@@ -32,23 +32,12 @@ export default class extends Controller {
     this.activeIndex = 0
   }
 
-  // --- Write / Preview tabs ------------------------------------------------
-
   showWrite() {
     this.writeTarget.hidden = false
     this.previewTarget.hidden = true
     this.writeTabTarget.classList.add("is-active")
     this.previewTabTarget.classList.remove("is-active")
     this.inputTarget.focus()
-  }
-
-  showPreview() {
-    this.previewTarget.innerHTML = this.renderMarkdown(this.inputTarget.value.trim() || "_Nothing to preview yet._")
-    this.hideSuggestions()
-    this.writeTarget.hidden = true
-    this.previewTarget.hidden = false
-    this.previewTabTarget.classList.add("is-active")
-    this.writeTabTarget.classList.remove("is-active")
   }
 
   // --- Toolbar -------------------------------------------------------------
@@ -252,104 +241,6 @@ export default class extends Controller {
   hideSuggestions() {
     this.suggestionsTarget.hidden = true
     this.suggestionsTarget.innerHTML = ""
-  }
-
-  // --- Live preview render (GFM subset) ------------------------------------
-  //
-  // A lightweight client-side renderer covering the constructs the toolbar can
-  // produce — headings, blockquotes, alerts, lists, task lists, tables, fenced
-  // code and inline marks. It is intentionally a preview, not a full CommonMark
-  // engine; the server renders the canonical HTML on submit.
-  renderMarkdown(source) {
-    const lines = source.split("\n")
-    let html = ""
-    let i = 0
-
-    while (i < lines.length) {
-      const line = lines[i]
-
-      if (/^```/.test(line)) {
-        const buf = []
-        i++
-        while (i < lines.length && !/^```/.test(lines[i])) { buf.push(this.escape(lines[i])); i++ }
-        i++
-        html += `<pre><code>${buf.join("\n")}</code></pre>`
-        continue
-      }
-
-      const heading = line.match(/^(#{1,3})\s+(.*)$/)
-      if (heading) {
-        const n = heading[1].length
-        html += `<h${n}>${this.renderInline(heading[2])}</h${n}>`
-        i++
-        continue
-      }
-
-      if (/^>/.test(line)) {
-        const buf = []
-        while (i < lines.length && /^>/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, "")); i++ }
-        const alert = buf[0] && buf[0].match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/i)
-        if (alert) {
-          const kind = alert[1].toUpperCase()
-          const title = kind[0] + kind.slice(1).toLowerCase()
-          const body = buf.slice(1).filter((l) => l.trim() !== "").map((l) => `<p>${this.renderInline(l)}</p>`).join("")
-          html += `<div class="markdown-alert ${kind.toLowerCase()}"><p class="markdown-alert-title">${this.alertIcons[kind]}${title}</p>${body}</div>`
-        } else {
-          html += `<blockquote>${buf.map((l) => this.renderInline(l)).join("<br>")}</blockquote>`
-        }
-        continue
-      }
-
-      if (/^\s*[-*+]\s+/.test(line)) {
-        const buf = []
-        let task = false
-        while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
-          const item = lines[i].replace(/^\s*[-*+]\s+/, "")
-          const checkbox = item.match(/^\[([ xX])\]\s+(.*)$/)
-          if (checkbox) {
-            task = true
-            const checked = checkbox[1].toLowerCase() === "x" ? " checked" : ""
-            buf.push(`<li class="task-list-item"><input type="checkbox" disabled${checked}>${this.renderInline(checkbox[2])}</li>`)
-          } else {
-            buf.push(`<li>${this.renderInline(item)}</li>`)
-          }
-          i++
-        }
-        html += `<ul${task ? ' class="contains-task-list"' : ""}>${buf.join("")}</ul>`
-        continue
-      }
-
-      if (/^\s*\d+\.\s+/.test(line)) {
-        const buf = []
-        while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) { buf.push(`<li>${this.renderInline(lines[i].replace(/^\s*\d+\.\s+/, ""))}</li>`); i++ }
-        html += `<ol>${buf.join("")}</ol>`
-        continue
-      }
-
-      if (/^\s*\|.*\|\s*$/.test(line) && i + 1 < lines.length && /^\s*\|[\s:|-]+\|\s*$/.test(lines[i + 1])) {
-        const cells = (row) => row.trim().replace(/^\||\|$/g, "").split("|").map((c) => c.trim())
-        const head = cells(line)
-        i += 2
-        let body = ""
-        while (i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i])) {
-          body += `<tr>${cells(lines[i]).map((c) => `<td>${this.renderInline(c)}</td>`).join("")}</tr>`
-          i++
-        }
-        html += `<table><thead><tr>${head.map((c) => `<th>${this.renderInline(c)}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table>`
-        continue
-      }
-
-      if (line.trim() === "") { i++; continue }
-
-      const buf = []
-      while (i < lines.length && lines[i].trim() !== "" && !/^(#{1,3}\s|>|```|\s*[-*+]\s|\s*\d+\.\s|\s*\|)/.test(lines[i])) {
-        buf.push(this.renderInline(lines[i]))
-        i++
-      }
-      html += `<p>${buf.join("<br>")}</p>`
-    }
-
-    return html
   }
 
   renderInline(text) {
