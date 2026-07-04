@@ -1,4 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
+import emoji from "objects/emoji"
+import corrections from "objects/corrections"
 
 // GitHub-flavored-markdown editor over a plain <textarea>.
 //
@@ -24,21 +26,6 @@ export default class extends Controller {
     IMPORTANT: '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M8 2 9.8 5.7 14 6.3l-3 2.9.7 4.1L8 11.4 4.3 13.3 5 9.2 2 6.3l4.2-.6z"/></svg>',
     WARNING:   '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 2.5 14.5 13.5H1.5z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 6.5v3.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.5" r="0.8" fill="currentColor"/></svg>',
     CAUTION:   '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M5.3 2.5h5.4l3.3 3.3v5.4l-3.3 3.3H5.3L2 11.2V5.8z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 5v3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.2" r="0.8" fill="currentColor"/></svg>'
-  }
-
-  // Shortcodes offered by the ":tag" autocomplete. A starter set — extend at will.
-  emoji = {
-    smile: "😄", grin: "😁", tada: "🎉", rocket: "🚀", fire: "🔥", bug: "🐛",
-    eyes: "👀", thumbsup: "👍", heart: "❤️", warning: "⚠️", sparkles: "✨",
-    check: "✅", x: "❌", thinking: "🤔", clap: "👏", wave: "👋"
-  }
-
-  // Whole-word fixes offered as a suggestion when the typed word matches. Case
-  // of the first letter is preserved so "Teh" → "The".
-  corrections = {
-    teh: "the", adn: "and", thier: "their", recieve: "receive", seperate: "separate",
-    definately: "definitely", occured: "occurred", wich: "which", dont: "don't",
-    cant: "can't", wont: "won't", ive: "I've", alot: "a lot", becuase: "because"
   }
 
   connect() {
@@ -190,17 +177,19 @@ export default class extends Controller {
     if (emojiToken) {
       const query = emojiToken[1].toLowerCase()
       const start = caret - emojiToken[0].length
-      const items = Object.keys(this.emoji)
+      const items = Object.keys(emoji)
         .filter((key) => key.includes(query))
+        .sort((a, b) => (b.startsWith(query) - a.startsWith(query)) || a.localeCompare(b))
         .slice(0, 6)
-        .map((key) => ({ html: `${this.emoji[key]}<span>:${key}:</span>`, start, end: caret, insert: `${this.emoji[key]} ` }))
+        .map((key) => ({ html: `${emoji[key]}<span>:${key}:</span>`, start, end: caret, insert: `${emoji[key]} ` }))
       return items.length ? this.renderSuggestions(items) : this.hideSuggestions()
     }
 
     // Spelling: the word currently being typed, if it's a known typo.
     const wordToken = upto.match(/([A-Za-z']+)$/)
     if (wordToken) {
-      const fix = this.corrections[wordToken[1].toLowerCase()]
+      const typo = wordToken[1].toLowerCase()
+      const fix = Object.hasOwn(corrections, typo) && corrections[typo]
       if (fix) {
         const cased = this.matchCase(wordToken[1], fix)
         const start = caret - wordToken[1].length
