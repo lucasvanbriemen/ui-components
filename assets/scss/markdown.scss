@@ -101,35 +101,6 @@
   background: var(--surface);
   overflow: visible;
 
-  // Write / Preview tabs.
-  &__tabs {
-    display: flex;
-    gap: 0.25rem;
-    padding: 0.4rem 0.4rem 0;
-    border-bottom: 1px solid var(--outline);
-  }
-
-  &__tab {
-    border: 1px solid transparent;
-    border-bottom: none;
-    border-radius: 0.5rem 0.5rem 0 0;
-    padding: 0.45rem 0.85rem;
-    background: transparent;
-    color: var(--on-surface-variant);
-    font: inherit;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transform: translateY(1px);
-
-    &:hover { color: var(--on-surface); }
-
-    &.is-active {
-      color: var(--on-surface);
-      background: var(--surface);
-      border-color: var(--outline);
-    }
-  }
-
   &:focus-within {
     outline: 2px solid var(--primary);
   }

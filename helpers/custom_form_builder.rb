@@ -176,15 +176,8 @@ class CustomFormBuilder < ActionView::Helpers::FormBuilder
       @template.safe_join([build_markdown_toolbar, textarea, suggestions]),
       class: "markdown-editor__write", data: { "markdown-editor-target": "write" })
 
-    @template.content_tag(:div, @template.safe_join([build_markdown_tabs, write_pane]),
+    @template.content_tag(:div, @template.safe_join([write_pane]),
       class: "markdown-editor", data: { controller: "markdown-editor" })
-  end
-
-  def build_markdown_tabs
-    write = @template.tag.button("Write", type: "button", tabindex: -1,
-      class: "markdown-editor__tab is-active", data: { "markdown-editor-target": "writeTab", action: "click->markdown-editor#showWrite" })
-
-    @template.content_tag(:div, @template.safe_join([write]), class: "markdown-editor__tabs")
   end
 
   def build_markdown_toolbar
