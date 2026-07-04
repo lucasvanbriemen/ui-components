@@ -37,7 +37,7 @@ export default {
 
     let fullUrl = url;
     if (url.startsWith('/')) {
-      fullUrl = window.location.origin + url;
+      fullUrl = currentDomain + url;
     }
 
     return fetch(fullUrl, options)
