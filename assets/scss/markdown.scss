@@ -1,0 +1,206 @@
+// Two related pieces:
+//   .markdown        — rendered GFM output (e.g. an item body / comment).
+//   .markdown-editor — the composer rendered by CustomFormBuilder#text_area
+//                      with `markdown: true`, driven by the markdown-editor
+//                      Stimulus controller.
+
+.markdown {
+  line-height: 1.6;
+
+  h1, h2, h3, h4 { margin: 1.2rem 0 0.6rem; line-height: 1.25; }
+  p, ul, ol, blockquote, pre, table { margin: 0.6rem 0; }
+  ul, ol { padding-left: 1.5rem; }
+
+  a { color: var(--primary); text-decoration: underline; }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+    background: var(--surface-variant, rgba(127, 127, 127, 0.15));
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.35rem;
+  }
+
+  pre {
+    background: var(--surface-variant, rgba(127, 127, 127, 0.15));
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    overflow-x: auto;
+
+    code { background: none; padding: 0; }
+  }
+
+  blockquote {
+    border-left: 3px solid var(--outline);
+    padding-left: 0.75rem;
+    color: var(--on-surface-variant);
+  }
+
+  > :first-child { margin-top: 0; }
+  > :last-child { margin-bottom: 0; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+  }
+  th, td { border: 1px solid var(--outline); padding: 0.4rem 0.7rem; text-align: left; }
+  th { background: var(--surface-variant, rgba(127, 127, 127, 0.15)); }
+
+  ul.contains-task-list { list-style: none; padding-left: 0.25rem; }
+  .task-list-item input { margin-right: 0.5rem; }
+
+  // GFM alert callouts (Note / Tip / Important / Warning / Caution). The colour
+  // per kind is set below; this is the shared shell.
+  .markdown-alert {
+    border-left: 4px solid var(--alert-color, var(--outline));
+    border-radius: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: color-mix(in srgb, var(--alert-color, var(--outline)) 8%, transparent);
+
+    p { color: var(--on-surface); }
+    > :first-child { margin-top: 0; }
+    > :last-child { margin-bottom: 0; }
+  }
+
+  .markdown-alert-title {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 600;
+    color: var(--alert-color, var(--outline));
+
+    svg { display: block; }
+  }
+
+  .markdown-alert.note      { --alert-color: var(--primary, #4493f8); }
+  .markdown-alert.tip       { --alert-color: #3fb950; }
+  .markdown-alert.important { --alert-color: #ab7df8; }
+  .markdown-alert.warning   { --alert-color: #d29922; }
+  .markdown-alert.caution   { --alert-color: #f85149; }
+}
+
+// The composer wrapper: a normal block label sits above (not the floating
+// input-wrapper label), with the editor and helper text stacked below.
+.markdown-field {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-bottom: 0.4rem;
+    color: var(--on-surface-variant);
+  }
+}
+
+.markdown-editor {
+  position: relative;
+  border: 1px solid var(--outline);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  overflow: visible;
+
+  &:focus-within {
+    outline: 2px solid var(--primary);
+  }
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.4rem;
+    border-bottom: 1px solid var(--outline);
+  }
+
+  // Visual grouping: a thin divider before every group except the first.
+  &__group {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+
+    & + & {
+      margin-left: 0.25rem;
+      padding-left: 0.4rem;
+      border-left: 1px solid var(--outline);
+    }
+  }
+
+  &__tool {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.45rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--on-surface-variant);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.9rem;
+    line-height: 1;
+
+    svg { display: block; }
+
+    &:hover {
+      background: var(--surface-variant, rgba(127, 127, 127, 0.15));
+      color: var(--on-surface);
+    }
+
+    &--menu { margin-left: 0.25rem; }
+    &--labelled { justify-content: flex-start; width: 100%; }
+  }
+
+  &__caret { font-size: 0.7rem; opacity: 0.7; }
+
+  // The "Insert" dropdown is a styled <details>/<summary>.
+  &__insert {
+    position: relative;
+    margin-left: auto;
+
+    summary {
+      list-style: none;
+      &::-webkit-details-marker { display: none; }
+    }
+  }
+
+  &__menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.3rem);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    min-width: 12rem;
+    padding: 0.3rem;
+    border: 1px solid var(--outline);
+    border-radius: 0.75rem;
+    background: var(--surface);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+
+    .markdown-editor__tool {
+      height: auto;
+      padding: 0.5rem 0.6rem;
+      color: var(--on-surface);
+    }
+  }
+
+  &__textarea {
+    display: block;
+    width: 100%;
+    min-height: 7rem;
+    padding: 0.75rem;
+    border: none;
+    background: transparent;
+    color: var(--on-surface);
+    resize: vertical;
+    font: inherit;
+    line-height: 1.5;
+
+    &:focus { outline: none; }
+  }
+}
