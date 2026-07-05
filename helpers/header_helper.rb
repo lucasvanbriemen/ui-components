@@ -5,7 +5,7 @@
 #   <%= button do %> Save <% end %>
 #   <%= button(variant: :secondary, type: :button, class: "w-full") { "Cancel" } %>
 module HeaderHelper
-  def header(title: "No mans land", items: [])
+  def header(title: "No mans land", items: [], &block)
     tag.header(class: "header frosted-glass") do
       icon("logo") + content_tag(:span, "", class: "divder") + link_to(title, root_path, class: "title") + content_tag(:span, "", class: "divder") +
 
@@ -13,7 +13,9 @@ module HeaderHelper
           items.each do |item|
             concat button(text: item[:name], variant: :text, href: item[:href], active: item[:active], class: "nav-item")
           end
-        end
+        end +
+
+        block_given? ? capture(&block) : ""
     end
   end
 end
