@@ -15,7 +15,7 @@ module HeaderHelper
           end
         end +
 
-        block_given? ? capture(&block) : ""
+        (block_given? ? capture(&block) : "")
     end
   end
 end
