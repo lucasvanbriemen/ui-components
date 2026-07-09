@@ -68,6 +68,11 @@
       color: var(--on-primary);
     }
   }
+
+  &[disabled], &.disabled {
+    opacity: 0.37;
+    cursor: not-allowed;
+  }
 }
 
 // Inputs (e.g. input[type="submit"]) can't render a ::before, so the controller
