@@ -5,7 +5,7 @@
 #   <%= button do %> Save <% end %>
 #   <%= button(variant: :secondary, type: :button, class: "w-full") { "Cancel" } %>
 module ButtonHelper
-  VALID_VARIANTS = [:primary, :text, :outline]
+  VALID_VARIANTS = [:primary, :text, :outline, :danger]
 
   def button(variant: :primary, type: :submit, text: "'", href: "", active: false, method: "GET", **attrs, &block)
     raise ArgumentError, "Invalid button variant: #{variant}" unless VALID_VARIANTS.include?(variant)

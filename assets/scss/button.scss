@@ -85,6 +85,15 @@
     }
   }
 
+  &-danger {
+    background-color: var(--error);
+    color: var(--on-error);
+
+    &:hover:not(:disabled, .disabled) {
+      background-color: var(--error-8);
+    }
+  }
+
   &[disabled], &.disabled {
     opacity: 0.37;
     cursor: not-allowed;
