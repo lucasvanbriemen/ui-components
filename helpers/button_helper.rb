@@ -7,7 +7,7 @@
 module ButtonHelper
   VALID_VARIANTS = [:primary, :text, :outline]
 
-  def button(variant: :primary, type: :submit, text: "'", href: "", active: false, **attrs, &block)
+  def button(variant: :primary, type: :submit, text: "'", href: "", active: false, method: "GET", **attrs, &block)
     raise ArgumentError, "Invalid button variant: #{variant}" unless VALID_VARIANTS.include?(variant)
 
     extra = attrs.delete(:class)
@@ -21,6 +21,7 @@ module ButtonHelper
     content = block_given? ? capture(&block).strip : text.strip
 
     if href.present?
+      data[:turbo_method] = method
       return link_to(content, href, class: classes, data: data, **attrs)
     end
 
