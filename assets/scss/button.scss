@@ -69,6 +69,22 @@
     }
   }
 
+  &-outlined {
+    background-color: transparent;
+    color: var(--primary);
+    border: 1px solid var(--outline-variant);
+
+    &:hover:not(:disabled, .disabled) {
+      background-color: var(--primary-8);
+      color: var(--on-primary);
+    }
+
+    &.active {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+  }
+
   &[disabled], &.disabled {
     opacity: 0.37;
     cursor: not-allowed;
