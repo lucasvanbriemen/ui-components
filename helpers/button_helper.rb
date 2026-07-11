@@ -5,7 +5,11 @@
 #   <%= button do %> Save <% end %>
 #   <%= button(variant: :secondary, type: :button, class: "w-full") { "Cancel" } %>
 module ButtonHelper
+  VALID_VARIANTS = [:primary, :text, :outline]
+
   def button(variant: :primary, type: :submit, text: "'", href: "", active: false, **attrs, &block)
+    raise ArgumentError, "Invalid button variant: #{variant}" unless VALID_VARIANTS.include?(variant)
+
     extra = attrs.delete(:class)
     classes = ["button", "button-#{variant}", ("active" if active), extra].compact.join(" ")
 
