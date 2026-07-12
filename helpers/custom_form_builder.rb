@@ -1,8 +1,9 @@
 class CustomFormBuilder < ActionView::Helpers::FormBuilder
   # The always-visible toolbar, split into visual groups (separators between).
-  # Each entry is a wrap (prefix/suffix around the selection) or a line prefix
-  # (prepended to every selected line); the `markdown-editor` Stimulus
-  # controller reads the data-* attributes and applies them.
+  # Each entry is a wrap (prefix/suffix around the selection), a line prefix
+  # (prepended to every selected line), or an upload trigger (opens the hidden
+  # file input); the `markdown-editor` Stimulus controller reads the data-*
+  # attributes and applies them.
   MARKDOWN_TOOL_GROUPS = [
     [
       { icon: :bold,      label: "Bold",          prefix: "**",    suffix: "**",      placeholder: "bold text" },
@@ -14,7 +15,8 @@ class CustomFormBuilder < ActionView::Helpers::FormBuilder
       { icon: :heading,   label: "Heading",   line_prefix: "### " },
       { icon: :quote,     label: "Quote",     line_prefix: "> " },
       { icon: :code,      label: "Inline code", prefix: "`", suffix: "`", placeholder: "code" },
-      { icon: :link,      label: "Link",      prefix: "[", suffix: "](url)", placeholder: "text" }
+      { icon: :link,      label: "Link",      prefix: "[", suffix: "](url)", placeholder: "text" },
+      { icon: :image,     label: "Image",     upload: true }
     ],
     [
       { icon: :ul,        label: "Bulleted list", line_prefix: "- " },
@@ -132,7 +134,8 @@ class CustomFormBuilder < ActionView::Helpers::FormBuilder
   # the `markdown-editor` Stimulus controller) and an (initially hidden)
   # suggestions popup for emoji/typo autocomplete. Switching to Preview renders
   # the markdown live, client-side. The controller also handles formatting, list
-  # continuation, autocomplete and inline typo suggestions.
+  # continuation, autocomplete, inline typo suggestions, and image upload (via
+  # the toolbar button, paste, or drop) through ActiveStorage direct uploads.
   def build_markdown_editor(method, options)
     input_options = extract_input_options(options)
     input_options[:class] = [input_options[:class], "markdown-editor__textarea"].compact
@@ -140,16 +143,25 @@ class CustomFormBuilder < ActionView::Helpers::FormBuilder
     input_options[:spellcheck] = "true"
     input_options[:data] = (input_options[:data] || {}).merge(
       "markdown-editor-target": "input",
-      action: "keydown->markdown-editor#keydown input->markdown-editor#oninput"
+      action: "keydown->markdown-editor#keydown input->markdown-editor#oninput " \
+        "paste->markdown-editor#paste drop->markdown-editor#drop dragover->markdown-editor#dragover"
     )
 
     textarea = @template.text_area(@object_name, method, input_options)
+    file_input = @template.tag.input(type: "file", accept: "image/*", multiple: true, hidden: true,
+      data: { "markdown-editor-target": "fileInput", action: "change->markdown-editor#uploadSelected" })
     write_pane = @template.content_tag(:div,
-      @template.safe_join([build_markdown_toolbar, textarea]),
+      @template.safe_join([build_markdown_toolbar, textarea, file_input]),
       class: "markdown-editor__write", data: { "markdown-editor-target": "write" })
 
     @template.content_tag(:div, @template.safe_join([write_pane]),
-      class: "markdown-editor", data: { controller: "markdown-editor" })
+      class: "markdown-editor", data: {
+        controller: "markdown-editor",
+        # Same contract as ActionText/Trix: where DirectUpload POSTs the file,
+        # and the URL pattern the controller fills in with the returned blob.
+        "markdown-editor-direct-upload-url-value": @template.rails_direct_uploads_path,
+        "markdown-editor-blob-url-template-value": @template.rails_service_blob_path(":signed_id", ":filename")
+      })
   end
 
   def build_markdown_toolbar
@@ -174,7 +186,7 @@ class CustomFormBuilder < ActionView::Helpers::FormBuilder
   def markdown_tool_button(tool, labelled: false)
     # tabindex: -1 keeps the toolbar out of the tab order so Tab moves between
     # form fields, not toolbar buttons. type: button so it never submits.
-    data = { action: "click->markdown-editor#format" }
+    data = { action: tool[:upload] ? "click->markdown-editor#pickImage" : "click->markdown-editor#format" }
     data[:md_prefix] = tool[:prefix] if tool[:prefix]
     data[:md_suffix] = tool[:suffix] if tool[:suffix]
     data[:md_placeholder] = tool[:placeholder] if tool[:placeholder]

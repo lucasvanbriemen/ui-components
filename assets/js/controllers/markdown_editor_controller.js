@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { DirectUpload } from "@rails/activestorage"
 
 // GitHub-flavored-markdown editor over a plain <textarea>.
 //
@@ -11,8 +12,12 @@ import { Controller } from "@hotwired/stimulus"
 // Beyond formatting it adds editing conveniences, all client-side:
 //   - list continuation: Enter inside a list item starts the next item, and a
 //     second Enter on an empty item ends the list;
+//   - image upload: the Image button, pasting, and dropping all send the file
+//     to ActiveStorage as a direct upload (directUploadUrlValue) and insert the
+//     resulting blob URL (blobUrlTemplateValue) as an image link.
 export default class extends Controller {
-  static targets = ["input"]
+  static targets = ["input", "fileInput"]
+  static values = { directUploadUrl: String, blobUrlTemplate: String }
 
   connect() {
     this.activeIndex = 0
@@ -93,6 +98,92 @@ export default class extends Controller {
     ta.setSelectionRange(pos, pos)
   }
 
+
+  // --- Image upload ----------------------------------------------------------
+
+  pickImage() {
+    this.fileInputTarget.click()
+    this.closeMenus()
+  }
+
+  uploadSelected(event) {
+    this.uploadImages(event.target.files)
+    event.target.value = ""
+  }
+
+  paste(event) {
+    const images = this.imageFiles(event.clipboardData)
+    if (!images.length) return
+
+    event.preventDefault()
+    this.uploadImages(images)
+  }
+
+  // Without this the browser navigates to the dropped file instead of firing drop.
+  dragover(event) {
+    event.preventDefault()
+  }
+
+  drop(event) {
+    const images = this.imageFiles(event.dataTransfer)
+    if (!images.length) return
+
+    event.preventDefault()
+    this.uploadImages(images)
+  }
+
+  imageFiles(transfer) {
+    return Array.from(transfer?.files || []).filter((file) => file.type.startsWith("image/"))
+  }
+
+  uploadImages(files) {
+    Array.from(files).forEach((file) => this.uploadImage(file))
+  }
+
+  // Insert an "uploading" placeholder at the caret right away, then swap it for
+  // the final ![name](url) once ActiveStorage returns the blob — the user can
+  // keep typing while the upload runs.
+  uploadImage(file) {
+    const name = file.name.replace(/[[\]()]/g, "")
+    const placeholder = `![Uploading ${name}…]()`
+    this.insertAtCaret(placeholder)
+
+    new DirectUpload(file, this.directUploadUrlValue).create((error, blob) => {
+      if (error) {
+        this.replaceOnce(placeholder, "")
+        alert(`Uploading ${file.name} failed: ${error}`)
+        return
+      }
+
+      const url = this.blobUrlTemplateValue
+        .replace(":signed_id", blob.signed_id)
+        .replace(":filename", encodeURIComponent(blob.filename))
+      this.replaceOnce(placeholder, `![${name}](${url})`)
+    })
+  }
+
+  insertAtCaret(text) {
+    const ta = this.inputTarget
+    const { selectionStart: start, selectionEnd: end, value } = ta
+
+    ta.value = value.slice(0, start) + text + value.slice(end)
+    const pos = start + text.length
+    ta.focus()
+    ta.setSelectionRange(pos, pos)
+  }
+
+  // Replace the first occurrence, keeping the user's caret in place even when
+  // the swap happens behind it (uploads finish while they keep typing).
+  replaceOnce(search, replacement) {
+    const ta = this.inputTarget
+    const index = ta.value.indexOf(search)
+    if (index === -1) return
+
+    const { selectionStart, selectionEnd } = ta
+    ta.value = ta.value.slice(0, index) + replacement + ta.value.slice(index + search.length)
+    const shift = (pos) => (pos <= index ? pos : Math.max(index, pos + replacement.length - search.length))
+    ta.setSelectionRange(shift(selectionStart), shift(selectionEnd))
+  }
 
   // Enter inside "- ", "* ", "1. " etc. continues the list; on an empty item it
   // removes the marker and breaks out of the list instead.
