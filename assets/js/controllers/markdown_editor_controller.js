@@ -185,6 +185,13 @@ export default class extends Controller {
     ta.setSelectionRange(shift(selectionStart), shift(selectionEnd))
   }
 
+  // The textarea's keydown entry point (wired by the form builder).
+  keydown(event) {
+    if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+      this.continueList(event)
+    }
+  }
+
   // Enter inside "- ", "* ", "1. " etc. continues the list; on an empty item it
   // removes the marker and breaks out of the list instead.
   continueList(event) {

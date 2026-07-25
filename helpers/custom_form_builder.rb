@@ -143,7 +143,7 @@ class CustomFormBuilder < ActionView::Helpers::FormBuilder
     input_options[:spellcheck] = "true"
     input_options[:data] = (input_options[:data] || {}).merge(
       "markdown-editor-target": "input",
-      action: "keydown->markdown-editor#keydown input->markdown-editor#oninput " \
+      action: "keydown->markdown-editor#keydown " \
         "paste->markdown-editor#paste drop->markdown-editor#drop dragover->markdown-editor#dragover"
     )
 
@@ -159,8 +159,10 @@ class CustomFormBuilder < ActionView::Helpers::FormBuilder
         controller: "markdown-editor",
         # Same contract as ActionText/Trix: where DirectUpload POSTs the file,
         # and the URL pattern the controller fills in with the returned blob.
+        # Absolute blob URL (host from the current request) so bodies mirrored
+        # to external services (e.g. github.com) still resolve the image.
         "markdown-editor-direct-upload-url-value": @template.rails_direct_uploads_path,
-        "markdown-editor-blob-url-template-value": @template.rails_service_blob_path(":signed_id", ":filename")
+        "markdown-editor-blob-url-template-value": @template.rails_service_blob_url(":signed_id", ":filename")
       })
   end
 
