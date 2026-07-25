@@ -24,11 +24,60 @@ export default class extends Controller {
   connect() {
     this.onDocumentClick = this.handleDocumentClick.bind(this)
     document.addEventListener("click", this.onDocumentClick)
+    this.onKeydown = this.handleKeydown.bind(this)
+    this.element.addEventListener("keydown", this.onKeydown)
     this.updateSummary()
   }
 
   disconnect() {
     document.removeEventListener("click", this.onDocumentClick)
+    this.element.removeEventListener("keydown", this.onKeydown)
+  }
+
+  // Keyboard support while the panel is open: arrows move the highlight,
+  // Enter toggles the highlighted option, Escape closes (and auto-submits).
+  handleKeydown(event) {
+    if (this.panelTarget.hidden) return
+
+    switch (event.key) {
+      case "Escape":
+        event.preventDefault()
+        this.close()
+        break
+      case "ArrowDown":
+        event.preventDefault()
+        this.moveHighlight(1)
+        break
+      case "ArrowUp":
+        event.preventDefault()
+        this.moveHighlight(-1)
+        break
+      case "Enter":
+        event.preventDefault()
+        this.highlighted?.querySelector("input[type=checkbox], input[type=radio]")?.click()
+        break
+    }
+  }
+
+  visibleOptions() {
+    return this.optionTargets.filter((option) => !option.hidden)
+  }
+
+  moveHighlight(delta) {
+    const options = this.visibleOptions()
+    if (options.length === 0) return
+
+    const index = options.indexOf(this.highlighted)
+    this.highlight(options[Math.min(Math.max(index + delta, 0), options.length - 1)])
+  }
+
+  highlight(option) {
+    this.highlighted?.classList.remove("option--highlighted")
+    this.highlighted = option
+    if (option) {
+      option.classList.add("option--highlighted")
+      option.scrollIntoView({ block: "nearest" })
+    }
   }
 
   toggle(event) {
@@ -65,6 +114,9 @@ export default class extends Controller {
     this.optionTargets.forEach((option) => {
       option.hidden = query !== "" && !option.dataset.label.toLowerCase().includes(query)
     })
+
+    // Keep the keyboard highlight on a visible option.
+    if (!this.highlighted || this.highlighted.hidden) this.highlight(this.visibleOptions()[0])
   }
 
   onToggle() {

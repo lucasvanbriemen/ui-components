@@ -40,7 +40,8 @@
       display: none;
     }
 
-    &:hover {
+    &:hover,
+    &.option--highlighted {
       background-color: var(--surface-at-1);
     }
 
