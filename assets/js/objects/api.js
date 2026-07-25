@@ -1,9 +1,13 @@
 export default {
-  defaultHeaders: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
-    Authorization: "Bearer DEV_TOKEN",
+  // A getter so every request reads the *current* CSRF token — Turbo swaps
+  // the meta tag on navigation, and a token cached at module load goes stale.
+  get defaultHeaders() {
+    return {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content"),
+      Authorization: "Bearer DEV_TOKEN",
+    };
   },
 
   get(url, headers = {}) {
@@ -35,19 +39,11 @@ export default {
       options.body = JSON.stringify(data);
     }
 
-    let fullUrl = url;
-    if (url.startsWith('/')) {
-      fullUrl = currentDomain + url;
-    }
-
-    return fetch(fullUrl, options)
+    // fetch resolves relative URLs against the current page itself.
+    return fetch(url, options)
       .then(async (response) => {
-        // app.setLoading(false);
         if (response.headers.get("content-type")?.includes("application/json")) { return response.json(); }
         return response.text();
-      })
-      .then((data) => {
-        return data;
       });
   },
 };
