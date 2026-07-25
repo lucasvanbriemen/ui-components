@@ -28,9 +28,9 @@ export default {
     this.applyImages();
   },
 
-  applyImages() {
+  applyImages(root = document) {
     const theme = this.getTheme();
-    document.querySelectorAll("[data-theme-image]").forEach((element) => {
+    root.querySelectorAll("[data-theme-image]").forEach((element) => {
       const imageUrl = element.getAttribute(`data-theme-image-${theme}`);
       if (imageUrl) {
         element.src = imageUrl;
@@ -38,15 +38,36 @@ export default {
     });
   },
 
+  // Turbo Drive swaps the <body> on navigation and Turbo Streams insert
+  // elements at any time — neither refires DOMContentLoaded, so watch for
+  // elements arriving after the initial load and theme their images too.
+  observeImages() {
+    new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType !== Node.ELEMENT_NODE) continue;
+          if (node.matches("[data-theme-image]")) {
+            this.applyImages(node.parentNode || document);
+          } else if (node.querySelector("[data-theme-image]")) {
+            this.applyImages(node);
+          }
+        }
+      }
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  },
+
   init() {
     this.applyTheme();
+    this.observeImages();
 
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
       this.applyTheme();
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => this.applyImages());
+    } else {
       this.applyImages();
-    });
+    }
   }
 };
