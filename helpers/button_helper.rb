@@ -13,6 +13,8 @@ module ButtonHelper
     extra = attrs.delete(:class)
     classes = ["button", "button-#{variant}", ("active" if active), extra].compact.join(" ")
 
+    isDisabled = attrs.delete(:disabled)
+
     # Wire the ripple Stimulus controller, merging with any caller-supplied
     # data attributes (and not clobbering a custom controller list).
     data = attrs.delete(:data) || {}
@@ -22,9 +24,9 @@ module ButtonHelper
 
     if href.present?
       data[:turbo_method] = method
-      return link_to(content, href, class: classes, data: data, **attrs)
+      return link_to(content, href, class: safe_join([classes, [("disabled" if isDisabled)]].compact), data: data, **attrs)
     end
 
-    tag.button(content, type: type, class: classes, data: data, **attrs)
+    tag.button(content, type: type, class: classes, data: data, **attrs, disabled: isDisabled)
   end
 end
